@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>통합 검색 | AeroSchool FAA A&P</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F172A;--panel:#13203b;--panel2:#1a2a4a;--cyan:#60A5FA;--gold:#FBBF24;--green:#34D399;--red:#E0635A;--t1:#F1F5F9;--t2:#CBD5E1;--t3:#7c8db0;--line:rgba(96,165,250,.18);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:860px;margin:0 auto;padding:34px 20px 90px;}
+.top{display:flex;gap:14px;margin-bottom:8px;}
+.top a{color:var(--cyan);font-weight:700;font-size:13.5px;}
+h1{font-size:28px;font-weight:900;margin:6px 0 2px;}
+.sub{font-family:'JetBrains Mono',monospace;color:var(--t3);font-size:12.5px;margin-bottom:18px;}
+.searchbox{position:relative;margin-bottom:14px;}
+.searchbox input{width:100%;font-size:17px;padding:15px 18px;border-radius:13px;border:1px solid rgba(96,165,250,.4);background:var(--panel);color:var(--t1);outline:none;font-family:inherit;}
+.searchbox input:focus{border-color:var(--cyan);box-shadow:0 0 0 3px rgba(96,165,250,.15);}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;}
+.chip{font-size:12.5px;font-weight:700;padding:6px 13px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--t2);cursor:pointer;}
+.chip.on{background:rgba(96,165,250,.18);border-color:var(--cyan);color:var(--cyan);}
+.meta{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);margin-bottom:12px;}
+.res{background:var(--panel);border:1px solid var(--line);border-radius:12px;padding:14px 16px;margin-bottom:9px;display:block;transition:.12s;}
+.res:hover{border-color:var(--cyan);background:var(--panel2);}
+.res .path{font-family:'JetBrains Mono',monospace;font-size:11px;color:var(--gold);margin-bottom:5px;display:flex;gap:8px;align-items:center;flex-wrap:wrap;}
+.tag{font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;}
+.tag.sec{background:rgba(96,165,250,.15);color:var(--cyan);}
+.tag.quiz{background:rgba(251,191,36,.15);color:var(--gold);}
+.tag.oral{background:rgba(52,211,153,.15);color:var(--green);}
+.res .ko{font-size:14.5px;font-weight:600;line-height:1.55;}
+.res .en{display:block;font-size:12.5px;color:var(--t3);font-style:italic;margin-top:4px;line-height:1.5;}
+mark{background:rgba(251,191,36,.35);color:var(--gold);border-radius:3px;padding:0 2px;}
+.more{width:100%;padding:12px;border-radius:11px;border:1px solid var(--line);background:var(--panel);color:var(--cyan);font-weight:700;font-size:14px;cursor:pointer;margin-top:6px;}
+.empty{text-align:center;color:var(--t3);padding:44px 0;font-size:14px;}
+.hint{background:var(--panel);border:1px dashed var(--line);border-radius:12px;padding:18px;font-size:13px;color:var(--t3);line-height:1.8;}
+.hint b{color:var(--t2);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="index.html">← AeroSchool 홈</a><a href="dashboard.html">📊 대시보드</a></div>
+  <h1>🔍 통합 검색</h1>
+  <div class="sub" id="subLine">GENERAL · AIRFRAME · POWERPLANT 전체에서 검색</div>
+
+  <div class="searchbox"><input id="q" type="search" placeholder="한글·영문 검색 (예: 디토네이션, detonation, 마그네토, torque…)" autofocus autocomplete="off"></div>
+
+  <div class="chips" id="typeChips">
+    <button class="chip on" data-t="all">전체 유형</button>
+    <button class="chip" data-t="sec">📖 교재 주제</button>
+    <button class="chip" data-t="quiz">📝 기출문제</button>
+    <button class="chip" data-t="oral">🗣 구술문항</button>
+  </div>
+  <div class="chips" id="siteChips">
+    <button class="chip on" data-s="all">전체 과목</button>
+    <button class="chip" data-s="general">📘 General</button>
+    <button class="chip" data-s="airframe">✈️ Airframe</button>
+    <button class="chip" data-s="powerplant">⚙️ Powerplant</button>
+  </div>
+
+  <div class="meta" id="meta"></div>
+  <div id="out">
+    <div class="hint">
+      <b>검색 팁</b><br>
+      · 한글·영문 아무거나: <b>디토네이션</b> / <b>detonation</b> / <b>E-gap</b> / <b>37도 플레어</b><br>
+      · 여러 단어를 띄어쓰면 모두 포함된 항목을 찾습니다: <b>oil pressure low</b><br>
+      · 결과를 클릭하면 해당 챕터의 정확한 위치로 이동합니다
+    </div>
+  </div>
+</div>
+
+<script src="search_index.js"></script>
+<script>
+var IDX=window.SEARCH_INDEX||[];
+var SITE_ICO={general:'📘',airframe:'✈️',powerplant:'⚙️'};
+var TYPE_NAME={sec:'교재',quiz:'기출',oral:'구술'};
+var fType='all',fSite='all',shown=60;
+document.getElementById('subLine').textContent='총 '+IDX.length.toLocaleString()+'개 항목 — 교재 주제 · 기출 · 구술';
+
+function tokens(q){return q.toLowerCase().trim().split(/\s+/).filter(Boolean);}
+function score(item,tks){
+  var hay=(item.k+' '+item.e).toLowerCase();
+  var s=0;
+  for(var i=0;i<tks.length;i++){
+    var p=hay.indexOf(tks[i]);
+    if(p<0) return 0;
+    s+= (p<40?3:1) + (item.t==='sec'?1:0);
+  }
+  return s;
+}
+function hl(text,tks){
+  var out=esc(text);
+  tks.forEach(function(t){
+    if(t.length<1)return;
+    try{out=out.replace(new RegExp('('+t.replace(/[.*+?^${}()|[\]\\]/g,'\\$&')+')','gi'),'<mark>$1</mark>');}catch(e){}
+  });
+  return out;
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function link(it){
+  var u=it.p.slice(1);
+  if(it.a) u+='#'+it.a;
+  return u;
+}
+function run(){
+  var q=document.getElementById('q').value;
+  var tks=tokens(q);
+  var out=document.getElementById('out');
+  var meta=document.getElementById('meta');
+  if(!tks.length){meta.textContent='';out.innerHTML=document.getElementById('hintKeep')?'':out.innerHTML;return;}
+  var res=[];
+  for(var i=0;i<IDX.length;i++){
+    var it=IDX[i];
+    if(fType!=='all'&&it.t!==fType)continue;
+    if(fSite!=='all'&&it.s!==fSite)continue;
+    var sc=score(it,tks);
+    if(sc>0)res.push([sc,it]);
+  }
+  res.sort(function(a,b){return b[0]-a[0];});
+  meta.textContent=res.length.toLocaleString()+'개 결과';
+  if(!res.length){out.innerHTML='<div class="empty">결과가 없습니다. 다른 검색어를 시도해 보세요.</div>';return;}
+  var h='';
+  res.slice(0,shown).forEach(function(r){
+    var it=r[1];
+    h+='<a class="res" href="'+link(it)+'">'
+      +'<div class="path"><span class="tag '+it.t+'">'+TYPE_NAME[it.t]+'</span>'
+      +SITE_ICO[it.s]+' '+it.s.charAt(0).toUpperCase()+it.s.slice(1)+' · '+esc(it.c)+'</div>'
+      +'<div class="ko">'+hl(it.k,tks)+'</div>'
+      +(it.e?'<span class="en">'+hl(it.e,tks)+'</span>':'')
+      +'</a>';
+  });
+  if(res.length>shown)h+='<button class="more" onclick="shown+=60;run()">더 보기 ('+(res.length-shown)+'개 남음)</button>';
+  out.innerHTML=h;
+}
+var deb;
+document.getElementById('q').addEventListener('input',function(){shown=60;clearTimeout(deb);deb=setTimeout(run,180);});
+document.getElementById('typeChips').addEventListener('click',function(e){
+  var b=e.target.closest('.chip');if(!b)return;
+  fType=b.getAttribute('data-t');shown=60;
+  this.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c===b);});
+  run();
+});
+document.getElementById('siteChips').addEventListener('click',function(e){
+  var b=e.target.closest('.chip');if(!b)return;
+  fSite=b.getAttribute('data-s');shown=60;
+  this.querySelectorAll('.chip').forEach(function(c){c.classList.toggle('on',c===b);});
+  run();
+});
+// URL ?q= 지원
+(function(){
+  var m=location.search.match(/[?&]q=([^&]+)/);
+  if(m){document.getElementById('q').value=decodeURIComponent(m[1].replace(/\+/g,' '));run();}
+})();
+</script>
+</body>
+</html>
