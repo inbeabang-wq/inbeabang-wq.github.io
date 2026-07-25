@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ACS 시험 블루프린트 | AeroSchool FAA A&P</title>
+<meta name="description" content="FAA 정비사 ACS(Airman Certification Standards) 영역을 General·Airframe·Powerplant 챕터에 매핑한 시험 범위 지도.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F172A;--panel:#13203b;--panel2:#1a2a4a;--cyan:#60A5FA;--gold:#FBBF24;--green:#34D399;--red:#E0635A;--t1:#F1F5F9;--t2:#CBD5E1;--t3:#7c8db0;--line:rgba(96,165,250,.18);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;line-height:1.6;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:900px;margin:0 auto;padding:30px 20px 90px;}
+.topnav{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:20px;padding-bottom:13px;border-bottom:1px solid var(--line);}
+.topnav a{color:var(--cyan);font-weight:700;font-size:13.5px;}
+.topnav a:hover{color:var(--gold);}
+h1{font-size:29px;font-weight:900;margin-bottom:4px;}
+.sub{font-family:'JetBrains Mono',monospace;color:var(--t3);font-size:12.5px;margin-bottom:8px;}
+.intro{color:var(--t2);font-size:14px;margin-bottom:22px;line-height:1.7;}
+.intro b{color:var(--gold);}
+.tabs{display:flex;gap:8px;margin-bottom:20px;flex-wrap:wrap;}
+.tab{font-weight:700;font-size:14px;padding:9px 18px;border-radius:10px;border:1px solid var(--line);background:var(--panel);color:var(--t2);cursor:pointer;}
+.tab.on{border-color:var(--cyan);color:var(--cyan);background:rgba(96,165,250,.14);}
+.grp{display:none;}
+.grp.show{display:block;}
+.gh{display:flex;align-items:baseline;gap:10px;margin:6px 0 14px;}
+.gh .code{font-family:'JetBrains Mono',monospace;font-size:13px;color:var(--gold);font-weight:700;}
+.gh h2{font-size:19px;font-weight:900;}
+.gh .cnt{margin-left:auto;font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);}
+.area{display:flex;align-items:center;gap:14px;padding:12px 16px;border:1px solid var(--line);border-radius:11px;background:var(--panel);margin-bottom:8px;transition:.12s;}
+.area:hover{border-color:var(--cyan);background:var(--panel2);}
+.area .badge{font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:#04122e;background:var(--cyan);border-radius:7px;padding:5px 9px;white-space:nowrap;min-width:74px;text-align:center;}
+.g2 .badge{background:var(--green);} .g3 .badge{background:var(--gold);}
+.area .txt{flex:1;min-width:0;}
+.area .en{font-size:14.5px;font-weight:700;}
+.area .ko{font-size:12.5px;color:var(--t3);margin-top:1px;}
+.area .go{font-size:12.5px;color:var(--cyan);font-weight:700;white-space:nowrap;}
+.area.nolink{opacity:.6;}
+.area.nolink .go{color:var(--t3);}
+.foot{margin-top:26px;font-size:12px;color:var(--t3);line-height:1.7;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="topnav">
+    <a href="index.html">← AeroSchool 홈</a>
+    <a href="search.html">🔍 통합 검색</a>
+    <a href="daily/">📅 1일 2건</a>
+  </div>
+  <h1>🎯 ACS 시험 블루프린트</h1>
+  <div class="sub">FAA-S-ACS-1 · Aviation Mechanic Airman Certification Standards</div>
+  <div class="intro">
+    FAA 정비사 시험의 공식 범위는 <b>ACS(Airman Certification Standards)</b>의 <b>영역(Area of Operation)</b>으로 정의됩니다.
+    각 영역이 이 사이트의 어느 챕터에 해당하는지 지도로 정리했습니다. 영역을 누르면 해당 학습 챕터로 이동합니다.<br>
+    <b>AM.I</b> General · <b>AM.II</b> Airframe · <b>AM.III</b> Powerplant
+  </div>
+
+  <div class="tabs">
+    <button class="tab on" data-g="g1">📘 General (AM.I)</button>
+    <button class="tab" data-g="g2">✈️ Airframe (AM.II)</button>
+    <button class="tab" data-g="g3">⚙️ Powerplant (AM.III)</button>
+  </div>
+
+  <div class="grp g1 show" id="g1">
+    <div class="gh"><span class="code">AM.I</span><h2>General</h2><span class="cnt">12 영역</span></div>
+    <div id="g1list"></div>
+  </div>
+  <div class="grp g2" id="g2">
+    <div class="gh"><span class="code">AM.II</span><h2>Airframe</h2><span class="cnt">15 영역</span></div>
+    <div id="g2list"></div>
+  </div>
+  <div class="grp g3" id="g3">
+    <div class="gh"><span class="code">AM.III</span><h2>Powerplant</h2><span class="cnt">13 영역</span></div>
+    <div id="g3list"></div>
+  </div>
+
+  <div class="foot">
+    출처: <a href="https://www.faa.gov/training_testing/testing/acs">FAA Airman Certification Standards (FAA-S-ACS-1)</a> · 미국 연방정부 공개자료<br>
+    영역↔챕터 매핑은 학습 편의를 위한 것으로, 일부 영역(회전익·물/폐수 등)은 사이트에 전용 챕터가 없어 가장 가까운 챕터로 연결하거나 표시만 했습니다.
+  </div>
+</div>
+
+<script>
+var DATA={
+ g1:[["A","Fundamentals of Electricity and Electronics","전기·전자 기초","general/ch04_basic_electricity.html"],
+     ["B","Aircraft Drawings","항공기 도면","general/ch05_aircraft_drawings.html"],
+     ["C","Weight and Balance","무게와 평형","general/ch06_weight_balance.html"],
+     ["D","Fluid Lines and Fittings","유체 라인과 피팅","general/ch09_fluid_lines.html"],
+     ["E","Aircraft Materials, Hardware, and Processes","재료·하드웨어·공정","general/ch07_materials_processes.html"],
+     ["F","Ground Operations and Servicing","지상 운용과 서비스","general/ch10_ground_operation.html"],
+     ["G","Cleaning and Corrosion Control","세척과 부식 방지","general/ch08_corrosion_control.html"],
+     ["H","Mathematics","항공 수학","general/ch02_mathematics.html"],
+     ["I","Regulations, Maintenance Forms, Records, and Publications","규정·서식·기록·간행물","general/ch11_regulations.html"],
+     ["J","Physics for Aviation","항공 물리","general/ch03_basic_physics.html"],
+     ["K","Inspection Concepts and Techniques","검사 개념과 기법·공구","general/ch14_tools.html"],
+     ["L","Human Factors","인적 요인","general/ch01_intro_aviation.html"]],
+ g2:[["A","Metallic Structures","금속 구조","airframe/ch04_metal_repair.html"],
+     ["B","Non-Metallic Structures","비금속 구조(천·목재·복합재)","airframe/ch07_composites.html"],
+     ["C","Flight Controls","조종면과 리깅","airframe/ch02_aerodynamics_rigging.html"],
+     ["D","Airframe Inspection","기체 검사","airframe/ch18_inspection.html"],
+     ["E","Landing Gear Systems","착륙장치 계통","airframe/ch13_landing_gear.html"],
+     ["F","Hydraulic and Pneumatic Systems","유압·공압 계통","airframe/ch12_hydraulic_pneumatic.html"],
+     ["G","Environmental Systems","객실 환경 계통","airframe/ch16_cabin_environment.html"],
+     ["H","Aircraft Instrument Systems","계기 계통","airframe/ch10_instruments.html"],
+     ["I","Communications, Light Signals, and Runway Lighting","통신·항법·신호","airframe/ch11_comm_nav.html"],
+     ["J","Aircraft Fuel Systems","연료 계통","airframe/ch14_fuel_systems.html"],
+     ["K","Aircraft Electrical Systems","전기 계통","airframe/ch09_electrical.html"],
+     ["L","Ice and Rain Control Systems","방빙·제빙 계통","airframe/ch15_ice_rain.html"],
+     ["M","Airframe Fire Protection Systems","기체 화재 방지","airframe/ch17_fire_protection.html"],
+     ["N","Rotorcraft Fundamentals","회전익 기초","airframe/ch02_aerodynamics_rigging.html"],
+     ["O","Water and Waste Systems","물·폐수 계통","airframe/ch16_cabin_environment.html"]],
+ g3:[["A","Reciprocating Engines","왕복 엔진","powerplant/ch01_aircraft_engines.html"],
+     ["B","Turbine Engines","터빈 엔진","powerplant/ch01_aircraft_engines.html"],
+     ["C","Engine Inspection","엔진 검사","powerplant/ch10_maintenance_operation.html"],
+     ["D","Engine Instrument Systems","엔진 계기 계통","powerplant/ch04_ignition_electrical.html"],
+     ["E","Engine Fire Protection Systems","엔진 화재 방지","powerplant/ch09_fire_protection.html"],
+     ["F","Engine Electrical Systems","엔진 전기 계통","powerplant/ch04_ignition_electrical.html"],
+     ["G","Engine Lubrication Systems","엔진 윤활 계통","powerplant/ch06_lubrication_cooling.html"],
+     ["H","Ignition and Starting Systems","점화·시동 계통","powerplant/ch05_starting_systems.html"],
+     ["I","Engine Fuel and Fuel Metering Systems","엔진 연료·연료계량","powerplant/ch02_fuel_systems.html"],
+     ["J","Reciprocating Engine Induction and Cooling","흡기·냉각 계통","powerplant/ch03_induction_exhaust.html"],
+     ["K","Turbine Engine Air Systems","터빈 공기 계통","powerplant/ch03_induction_exhaust.html"],
+     ["L","Engine Exhaust and Reverser Systems","배기·역추력 계통","powerplant/ch03_induction_exhaust.html"],
+     ["M","Propellers","프로펠러","powerplant/ch07_propellers.html"]]
+};
+var PREFIX={g1:"AM.I",g2:"AM.II",g3:"AM.III"};
+function esc(s){return s.replace(/&/g,"&amp;").replace(/</g,"&lt;");}
+function render(g){
+  var rows=DATA[g].map(function(a){
+    var code=PREFIX[g]+"."+a[0];
+    return '<a class="area '+g+'" href="'+a[3]+'">'
+      +'<span class="badge">'+code+'</span>'
+      +'<span class="txt"><span class="en">'+esc(a[1])+'</span><span class="ko">'+esc(a[2])+'</span></span>'
+      +'<span class="go">학습 →</span></a>';
+  }).join("");
+  document.getElementById(g+"list").innerHTML=rows;
+}
+["g1","g2","g3"].forEach(render);
+document.querySelector(".tabs").addEventListener("click",function(e){
+  var b=e.target.closest(".tab"); if(!b) return;
+  var g=b.getAttribute("data-g");
+  this.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("on",t===b);});
+  document.querySelectorAll(".grp").forEach(function(gr){gr.classList.toggle("show",gr.id===g);});
+});
+</script>
+</body>
+</html>
