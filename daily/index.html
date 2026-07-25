@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>1일 2건 — 매일 FAA A&P 두 문제씩</title>
+<meta name="description" content="매일 General·Airframe·Powerplant 과목별 객관식 1문제 + 구술 1문제. 하루 2건씩 꾸준히.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F172A;--panel:#13203b;--panel2:#1a2a4a;--cyan:#60A5FA;--gold:#FBBF24;--green:#34D399;--red:#E0635A;--t1:#F1F5F9;--t2:#CBD5E1;--t3:#7c8db0;--line:rgba(96,165,250,.18);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;line-height:1.65;
+ background-image:linear-gradient(rgba(96,165,250,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(96,165,250,.04) 1px,transparent 1px);background-size:44px 44px;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:680px;margin:0 auto;padding:44px 20px 90px;}
+.hero{text-align:center;margin-bottom:26px;}
+.kicker{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--gold);letter-spacing:3px;}
+h1{font-family:'Space Grotesk','Noto Sans KR',sans-serif;font-size:52px;font-weight:900;margin:10px 0 4px;letter-spacing:-1px;}
+h1 .accent{color:var(--cyan);}
+.tag{color:var(--t2);font-size:14.5px;}
+.datebar{display:flex;align-items:center;justify-content:center;gap:14px;margin:22px 0 6px;}
+.datebar button{background:var(--panel);border:1px solid var(--line);color:var(--t2);border-radius:9px;padding:7px 13px;font-size:14px;cursor:pointer;}
+.datebar button:disabled{opacity:.3;cursor:default;}
+.dtext{font-family:'JetBrains Mono',monospace;font-size:15px;color:var(--cyan);min-width:150px;}
+.streak{font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--t3);margin-bottom:18px;}
+.streak b{color:var(--gold);}
+.gobtn{display:block;width:100%;font-family:inherit;font-size:19px;font-weight:900;padding:19px;border-radius:16px;border:none;cursor:pointer;
+ background:linear-gradient(135deg,var(--cyan),#3B82F6);color:#04122e;box-shadow:0 8px 26px rgba(59,130,246,.35);transition:.15s;}
+.gobtn:hover{transform:translateY(-2px);}
+.cards{display:none;margin-top:26px;}
+.subject{background:var(--panel);border:1px solid var(--line);border-radius:16px;margin-bottom:18px;overflow:hidden;}
+.sh{display:flex;align-items:center;gap:10px;padding:13px 18px;border-bottom:1px solid var(--line);}
+.sh .ico{font-size:19px;}
+.sh h2{font-size:16px;font-weight:900;}
+.sh .mono{font-family:'JetBrains Mono',monospace;font-size:10.5px;color:var(--t3);margin-left:auto;}
+.qbox{padding:16px 18px;}
+.qbox+.qbox{border-top:1px dashed var(--line);}
+.qlabel{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;margin-bottom:8px;}
+.qlabel.mc{color:var(--gold);} .qlabel.or{color:var(--green);}
+.qt{font-size:15.5px;font-weight:700;line-height:1.6;}
+.qe{display:block;font-size:12.5px;color:var(--t3);font-style:italic;margin-top:5px;line-height:1.5;}
+.opts{list-style:none;margin-top:12px;}
+.opts li{border:1px solid var(--line);border-radius:10px;padding:10px 13px;margin:7px 0;font-size:14px;cursor:pointer;transition:.12s;}
+.opts li:hover{border-color:var(--cyan);background:rgba(96,165,250,.06);}
+.opts li .en{display:block;font-size:11.5px;color:var(--t3);font-style:italic;}
+.opts li.correct{border-color:var(--green);background:rgba(52,211,153,.1);}
+.opts li.wrong{border-color:var(--red);background:rgba(224,99,90,.1);}
+.opts.locked li{cursor:default;}
+.exp{display:none;margin-top:11px;padding:11px 14px;background:rgba(251,191,36,.07);border-left:3px solid var(--gold);border-radius:0 8px 8px 0;font-size:13.5px;color:var(--t2);}
+.exp.show{display:block;}
+.exp b{color:var(--gold);}
+.abtn{margin-top:12px;background:rgba(52,211,153,.12);border:1px solid rgba(52,211,153,.45);color:var(--green);font-weight:700;font-size:13.5px;border-radius:9px;padding:9px 16px;cursor:pointer;}
+.ans{display:none;margin-top:11px;padding:12px 15px;background:rgba(52,211,153,.06);border-left:3px solid var(--green);border-radius:0 8px 8px 0;}
+.ans.show{display:block;}
+.ans .ak{font-size:14px;color:#a7f3d0;line-height:1.7;}
+.ans .ae{display:block;font-size:12px;color:var(--t3);font-style:italic;margin-top:6px;}
+.donebar{display:none;text-align:center;margin-top:8px;}
+.donebtn{background:rgba(52,211,153,.14);border:1px solid rgba(52,211,153,.5);color:var(--green);font-weight:900;font-size:15px;border-radius:12px;padding:13px 26px;cursor:pointer;}
+.donebtn.did{background:var(--green);color:#04122e;cursor:default;}
+.foot{margin-top:34px;text-align:center;font-size:12.5px;color:var(--t3);line-height:1.8;}
+.foot a{color:var(--cyan);}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="hero">
+    <div class="kicker">FAA A&P · DAILY TWO</div>
+    <h1>1일 <span class="accent">2건</span></h1>
+    <div class="tag">매일 과목별 객관식 1문제 + 구술 1문제, 딱 그만큼만.</div>
+    <div class="datebar">
+      <button id="prevBtn" onclick="nav(-1)">◀ 어제</button>
+      <span class="dtext" id="dtext"></span>
+      <button id="nextBtn" onclick="nav(1)">내일 ▶</button>
+    </div>
+    <div class="streak" id="streak"></div>
+    <button class="gobtn" id="go" onclick="reveal()">📅 오늘의 1일 2건 보기</button>
+  </div>
+
+  <div class="cards" id="cards"></div>
+
+  <div class="donebar" id="donebar">
+    <button class="donebtn" id="doneBtn" onclick="markDone()">✅ 오늘 학습 완료</button>
+  </div>
+
+  <div class="foot">
+    문제 출처: <a href="https://inbeabang-wq.github.io/">AeroSchool</a> FAA A&amp;P 문제은행 (객관식 2,671 · 구술 1,254)<br>
+    더 깊이 공부하려면 → <a href="https://inbeabang-wq.github.io/general/">General</a> ·
+    <a href="https://inbeabang-wq.github.io/airframe/">Airframe</a> ·
+    <a href="https://inbeabang-wq.github.io/powerplant/">Powerplant</a> ·
+    <a href="https://inbeabang-wq.github.io/search.html">🔍 통합 검색</a><br>
+    <span style="opacity:.7">@AEROMECHEXPERT · 매일 자정에 새 문제가 자동 출제됩니다</span>
+  </div>
+</div>
+
+<script src="bank.js"></script>
+<script>
+var SUBJ=[["general","📘","General"],["airframe","✈️","Airframe"],["powerplant","⚙️","Powerplant"]];
+var today=new Date(); today.setHours(0,0,0,0);
+var cur=new Date(today);
+(function(){var m=location.search.match(/[?&]d=(\d{8})/);
+ if(m){var d=new Date(+m[1].slice(0,4),+m[1].slice(4,6)-1,+m[1].slice(6,8));if(d<=today)cur=d;}})();
+
+function ymd(d){return d.getFullYear()*10000+(d.getMonth()+1)*100+d.getDate();}
+function fmt(d){var w='일월화수목금토'[d.getDay()];
+ return d.getFullYear()+'.'+String(d.getMonth()+1).padStart(2,'0')+'.'+String(d.getDate()).padStart(2,'0')+' ('+w+')';}
+function mulberry32(a){return function(){a|=0;a=a+0x6D2B79F5|0;var t=Math.imul(a^a>>>15,1|a);
+ t=t+Math.imul(t^t>>>7,61|t)^t;return((t^t>>>14)>>>0)/4294967296;}}
+
+function pick(){
+  var seed=ymd(cur), out=[];
+  SUBJ.forEach(function(s,i){
+    var rq=mulberry32(seed*7+i*131), ro=mulberry32(seed*13+i*277);
+    var Q=window.BANK.quiz[s[0]], O=window.BANK.oral[s[0]];
+    out.push({site:s,quiz:Q[Math.floor(rq()*Q.length)],oral:O[Math.floor(ro()*O.length)]});
+  });
+  return out;
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+
+function render(){
+  document.getElementById('dtext').textContent=fmt(cur);
+  document.getElementById('nextBtn').disabled=(ymd(cur)>=ymd(today));
+  var doneSet=getDone();
+  var isDone=doneSet.indexOf(ymd(cur))>=0;
+  var db=document.getElementById('doneBtn');
+  db.classList.toggle('did',isDone);
+  db.textContent=isDone?'✅ 완료한 날입니다':'✅ 오늘 학습 완료';
+  renderStreak();
+  document.getElementById('cards').style.display='none';
+  document.getElementById('cards').innerHTML='';
+  document.getElementById('donebar').style.display='none';
+  document.getElementById('go').style.display='block';
+}
+function reveal(){
+  var set=pick(), h='';
+  set.forEach(function(x,si){
+    var q=x.quiz,o=x.oral;
+    h+='<div class="subject"><div class="sh"><span class="ico">'+x.site[1]+'</span><h2>'+x.site[2]+'</h2>'
+      +'<span class="mono">'+esc(q.c)+'</span></div>'
+      +'<div class="qbox"><div class="qlabel mc">Q1 · 객관식</div>'
+      +'<div class="qt">'+esc(q.q)+'</div>'+(q.qe?'<span class="qe">'+esc(q.qe)+'</span>':'')
+      +'<ul class="opts" id="opts'+si+'">';
+    q.o.forEach(function(op){
+      h+='<li data-l="'+op.l+'" onclick="answer('+si+',this,\''+q.a+'\')">'+op.l+'. '+esc(op.k)
+        +(op.e?'<span class="en">'+esc(op.e)+'</span>':'')+'</li>';
+    });
+    h+='</ul><div class="exp" id="exp'+si+'"><b>정답: '+q.a+'</b>'+(q.x?' — '+esc(q.x):'')
+      +(q.xe?'<span class="qe" style="margin-top:6px">'+esc(q.xe)+'</span>':'')+'</div></div>'
+      +'<div class="qbox"><div class="qlabel or">Q2 · 구술</div>'
+      +'<div class="qt">'+esc(o.q)+'</div>'+(o.qe?'<span class="qe">'+esc(o.qe)+'</span>':'')
+      +'<button class="abtn" onclick="showAns('+si+',this)">답 보기</button>'
+      +'<div class="ans" id="ans'+si+'"><div class="ak">'+esc(o.a)+'</div>'
+      +(o.ae?'<span class="ae">'+esc(o.ae)+'</span>':'')+'</div></div></div>';
+  });
+  document.getElementById('cards').innerHTML=h;
+  document.getElementById('cards').style.display='block';
+  document.getElementById('donebar').style.display='block';
+  document.getElementById('go').style.display='none';
+}
+function answer(si,li,ans){
+  var ul=document.getElementById('opts'+si);
+  if(ul.classList.contains('locked'))return;
+  ul.classList.add('locked');
+  [].forEach.call(ul.children,function(c){
+    if(c.getAttribute('data-l')===ans)c.classList.add('correct');
+  });
+  if(li.getAttribute('data-l')!==ans)li.classList.add('wrong');
+  document.getElementById('exp'+si).classList.add('show');
+}
+function showAns(si,btn){document.getElementById('ans'+si).classList.add('show');btn.style.display='none';}
+
+function getDone(){try{return JSON.parse(localStorage.getItem('daily2:done')||'[]')}catch(e){return[]}}
+function markDone(){
+  var s=getDone(), d=ymd(cur);
+  if(s.indexOf(d)<0){s.push(d);s.sort();localStorage.setItem('daily2:done',JSON.stringify(s));}
+  var db=document.getElementById('doneBtn');
+  db.classList.add('did');db.textContent='✅ 완료한 날입니다';
+  renderStreak();
+}
+function renderStreak(){
+  var s=getDone(); if(!s.length){document.getElementById('streak').innerHTML='&nbsp;';return;}
+  var n=0,d=new Date(today);
+  if(s.indexOf(ymd(d))<0)d.setDate(d.getDate()-1);   // 오늘 아직이면 어제부터
+  while(s.indexOf(ymd(d))>=0){n++;d.setDate(d.getDate()-1);}
+  document.getElementById('streak').innerHTML=n?('🔥 연속 <b>'+n+'</b>일째 학습 중 · 총 <b>'+s.length+'</b>일'):('총 <b>'+s.length+'</b>일 학습');
+}
+function nav(dir){
+  var d=new Date(cur);d.setDate(d.getDate()+dir);
+  if(d>today)return;
+  cur=d;history.replaceState(null,'','?d='+ymd(cur));render();
+}
+render();
+</script>
+</body>
+</html>
