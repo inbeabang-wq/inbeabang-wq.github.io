@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>구술 복습 모드 | AeroSchool FAA A&P</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700;900&family=Space+Grotesk:wght@500;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0F172A;--panel:#13203b;--panel2:#1a2a4a;--cyan:#60A5FA;--gold:#FBBF24;--green:#34D399;--red:#E0635A;--t1:#F1F5F9;--t2:#CBD5E1;--t3:#7c8db0;--line:rgba(96,165,250,.18);}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{background:var(--bg);color:var(--t1);font-family:'Noto Sans KR',sans-serif;line-height:1.65;}
+a{color:inherit;text-decoration:none;}
+.wrap{max-width:760px;margin:0 auto;padding:34px 20px 90px;}
+.top{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:8px;}
+.top a{color:var(--cyan);font-weight:700;font-size:13.5px;}
+h1{font-size:28px;font-weight:900;margin:6px 0 2px;}
+.sub{font-family:'JetBrains Mono',monospace;color:var(--t3);font-size:12.5px;margin-bottom:20px;}
+.chips{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px;}
+.chip{font-size:13px;font-weight:700;padding:7px 14px;border-radius:20px;border:1px solid var(--line);background:var(--panel);color:var(--t2);cursor:pointer;}
+.chip.on{background:rgba(96,165,250,.18);border-color:var(--cyan);color:var(--cyan);}
+.empty{background:var(--panel);border:1px dashed var(--line);border-radius:14px;padding:34px 22px;text-align:center;color:var(--t3);font-size:14px;}
+.empty b{color:var(--green);}
+.prog{display:flex;align-items:center;gap:12px;margin-bottom:14px;font-family:'JetBrains Mono',monospace;font-size:12.5px;color:var(--t3);}
+.pbar{flex:1;height:8px;border-radius:4px;background:rgba(148,163,184,.15);overflow:hidden;}
+.pfill{height:100%;width:0;background:linear-gradient(90deg,var(--red),var(--gold));transition:width .25s;}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:24px 24px 20px;}
+.src{font-family:'JetBrains Mono',monospace;font-size:11.5px;color:var(--gold);margin-bottom:12px;}
+.src a:hover{text-decoration:underline;}
+.qk{font-size:18px;font-weight:700;line-height:1.55;}
+.qe{display:block;margin-top:8px;font-size:13.5px;color:var(--t3);font-style:italic;line-height:1.5;}
+.ans{display:none;margin-top:18px;padding:16px 18px;background:rgba(52,211,153,.06);border-left:3px solid var(--green);border-radius:0 10px 10px 0;}
+.ans.show{display:block;}
+.ans .label{font-family:'JetBrains Mono',monospace;font-size:10.5px;letter-spacing:1.5px;color:var(--green);margin-bottom:8px;}
+.ak{font-size:15px;color:#a7f3d0;line-height:1.7;}
+.ae{display:block;margin-top:8px;font-size:12.5px;color:var(--t3);font-style:italic;line-height:1.55;}
+.btns{display:flex;gap:10px;flex-wrap:wrap;margin-top:20px;}
+.btn{flex:1;min-width:130px;font-weight:700;font-size:14.5px;border-radius:11px;padding:13px;border:1px solid var(--line);background:var(--panel2);color:var(--t1);cursor:pointer;}
+.btn.reveal{background:rgba(96,165,250,.14);border-color:rgba(96,165,250,.45);color:var(--cyan);}
+.btn.know{background:rgba(52,211,153,.14);border-color:rgba(52,211,153,.5);color:var(--green);}
+.btn.again{background:rgba(224,99,90,.13);border-color:rgba(224,99,90,.5);color:var(--red);}
+.btn.skip{flex:0 0 auto;min-width:0;background:transparent;color:var(--t3);border-color:transparent;font-weight:500;}
+.done{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:34px 24px;text-align:center;}
+.done h2{font-size:24px;font-weight:900;margin-bottom:8px;}
+.done .big{font-family:'Space Grotesk',sans-serif;font-size:40px;color:var(--green);}
+.done p{color:var(--t2);font-size:14px;margin:10px 0 18px;}
+.loading{color:var(--t3);text-align:center;padding:40px 0;font-size:14px;}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top"><a href="dashboard.html">← 대시보드</a><a href="index.html">홈</a></div>
+  <h1>🔄 구술 복습 모드</h1>
+  <div class="sub">챕터에서 "다시"로 표시한 구술 문항만 모아 복습합니다</div>
+
+  <div class="chips" id="chips"></div>
+  <div id="stage"><div class="loading">불러오는 중…</div></div>
+</div>
+
+<script>
+var SITE_NAMES={general:'📘 General',airframe:'✈️ Airframe',powerplant:'⚙️ Powerplant'};
+var filter='all';
+var items=[];        // {path, id, site}
+var cache={};        // path -> Document
+var queue=[], idx=0, doneKnow=0, doneAgain=0;
+
+function collect(){
+  items=[];
+  for(var i=0;i<localStorage.length;i++){
+    var k=localStorage.key(i);
+    if(k.indexOf('orx:')!==0) continue;
+    var path=k.slice(4);
+    var m=path.match(/^\/(general|airframe|powerplant)\//);
+    if(!m) continue;
+    var st; try{st=JSON.parse(localStorage.getItem(k)||'{}')}catch(e){continue;}
+    for(var id in st){
+      if(id.indexOf('__')===0) continue;
+      if(st[id]==='again') items.push({path:path,id:id,site:m[1]});
+    }
+  }
+}
+function renderChips(){
+  var c={all:items.length,general:0,airframe:0,powerplant:0};
+  items.forEach(function(it){c[it.site]++;});
+  var h='';
+  [['all','전체'],['general','📘 General'],['airframe','✈️ Airframe'],['powerplant','⚙️ Powerplant']].forEach(function(p){
+    h+='<button class="chip'+(filter===p[0]?' on':'')+'" onclick="setFilter(\''+p[0]+'\')">'+p[1]+' '+c[p[0]]+'</button>';
+  });
+  document.getElementById('chips').innerHTML=h;
+}
+function setFilter(f){filter=f;start();}
+
+function fetchDoc(path){
+  if(cache[path]) return Promise.resolve(cache[path]);
+  return fetch(path).then(function(r){return r.text();}).then(function(t){
+    var doc=new DOMParser().parseFromString(t,'text/html');
+    cache[path]=doc; return doc;
+  });
+}
+function extract(doc, id){
+  var card=doc.getElementById(id);
+  if(!card) return null;
+  function tx(sel){var el=card.querySelector(sel);return el?el.textContent.trim():'';}
+  return {qk:tx('.qk'),qe:tx('.qe'),ak:tx('.oralx-ak'),ae:tx('.oralx-ae'),
+          ch:(doc.querySelector('title')?doc.querySelector('title').textContent.split('|')[0].trim():'')};
+}
+function setState(path,id,val){
+  var k='orx:'+path, st;
+  try{st=JSON.parse(localStorage.getItem(k)||'{}')}catch(e){st={};}
+  st[id]=val; st.__ts=Date.now();
+  localStorage.setItem(k,JSON.stringify(st));
+}
+
+function start(){
+  collect(); renderChips();
+  queue=items.filter(function(it){return filter==='all'||it.site===filter;});
+  // 셔플
+  for(var i=queue.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=queue[i];queue[i]=queue[j];queue[j]=t;}
+  idx=0; doneKnow=0; doneAgain=0;
+  if(!queue.length){
+    document.getElementById('stage').innerHTML=
+      '<div class="empty">복습할 "다시" 문항이 없습니다. 🎉<br><br>각 챕터의 구술시험에서 <b>🔄 다시</b>로 표시하면 여기에 모입니다.<br><br>'+
+      '<a href="general/" style="color:var(--cyan)">General</a> · <a href="airframe/" style="color:var(--cyan)">Airframe</a> · <a href="powerplant/" style="color:var(--cyan)">Powerplant</a></div>';
+    return;
+  }
+  show();
+}
+function show(){
+  if(idx>=queue.length){ return finish(); }
+  var it=queue[idx];
+  document.getElementById('stage').innerHTML='<div class="loading">문항 불러오는 중…</div>';
+  fetchDoc(it.path).then(function(doc){
+    var d=extract(doc,it.id);
+    if(!d||!d.qk){ idx++; return show(); }
+    var pct=Math.round(idx/queue.length*100);
+    document.getElementById('stage').innerHTML=
+      '<div class="prog"><span>'+(idx+1)+' / '+queue.length+'</span><div class="pbar"><div class="pfill" style="width:'+pct+'%"></div></div>'+
+      '<span>✅'+doneKnow+' 🔄'+doneAgain+'</span></div>'+
+      '<div class="card">'+
+      '<div class="src">'+SITE_NAMES[it.site]+' · <a href="'+it.path.slice(1)+'#'+it.id+'">'+d.ch+' ↗</a></div>'+
+      '<div class="qk">'+esc(d.qk)+'</div>'+(d.qe?'<span class="qe">'+esc(d.qe)+'</span>':'')+
+      '<div class="ans" id="ans"><div class="label">MODEL ANSWER · 모범답안</div>'+
+      '<div class="ak">'+esc(d.ak)+'</div>'+(d.ae?'<span class="ae">'+esc(d.ae)+'</span>':'')+'</div>'+
+      '<div class="btns">'+
+      '<button class="btn reveal" id="revealBtn" onclick="reveal()">답 보기</button>'+
+      '<button class="btn know" onclick="grade(\'know\')">✅ 이제 알았음</button>'+
+      '<button class="btn again" onclick="grade(\'again\')">🔄 아직</button>'+
+      '<button class="btn skip" onclick="skip()">건너뛰기</button>'+
+      '</div></div>';
+  }).catch(function(){ idx++; show(); });
+}
+function esc(s){return (s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;');}
+function reveal(){document.getElementById('ans').classList.add('show');document.getElementById('revealBtn').style.display='none';}
+function grade(v){
+  var it=queue[idx];
+  setState(it.path,it.id,v);
+  if(v==='know')doneKnow++;else doneAgain++;
+  idx++; show();
+}
+function skip(){idx++;show();}
+function finish(){
+  document.getElementById('stage').innerHTML=
+    '<div class="done"><h2>복습 완료 🎉</h2>'+
+    '<div class="big">✅ '+doneKnow+'</div>'+
+    '<p>이번 세션에서 '+doneKnow+'문항을 익혔고, '+doneAgain+'문항은 "다시" 목록에 남겨두었습니다.</p>'+
+    '<div class="btns" style="justify-content:center">'+
+    '<button class="btn reveal" onclick="start()">다시 한 바퀴</button>'+
+    '<a class="btn" style="text-align:center" href="dashboard.html">대시보드로</a>'+
+    '</div></div>';
+  renderChips();
+}
+start();
+</script>
+</body>
+</html>
