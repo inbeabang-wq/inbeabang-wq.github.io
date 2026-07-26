@@ -145,6 +145,13 @@ document.querySelector(".tabs").addEventListener("click",function(e){
   this.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("on",t===b);});
   document.querySelectorAll(".grp").forEach(function(gr){gr.classList.toggle("show",gr.id===g);});
 });
+(function(){
+  var m=(location.search||"").match(/[?&]s=(general|airframe|powerplant)/);
+  if(!m) return;
+  var g={general:"g1",airframe:"g2",powerplant:"g3"}[m[1]];
+  document.querySelectorAll(".tab").forEach(function(t){t.classList.toggle("on",t.getAttribute("data-g")===g);});
+  document.querySelectorAll(".grp").forEach(function(gr){gr.classList.toggle("show",gr.id===g);});
+})();
 </script>
 </body>
 </html>
